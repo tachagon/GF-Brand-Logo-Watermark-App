@@ -19,6 +19,8 @@ LOGO_FILENAME = LOGO_STYLE_1
 
 WANT_BACKGROUND = False
 
+SPECIFY_LOGO_POSITION = False
+
 # Start the program
 
 print('1. Choose logo style (1, 2 or 3)')
@@ -51,6 +53,31 @@ if len(wantBackground) > 0:
 	if wantBackground == 'Y' or wantBackground == 'y':
 		WANT_BACKGROUND = True
 
+print('4. Do you want to specify logo position: Y or N')
+print('(enter nothing for choose N (No))')
+specifyLogoPosition = input()
+
+if len(specifyLogoPosition) > 0:
+	if specifyLogoPosition == 'Y' or specifyLogoPosition == 'y':
+		SPECIFY_LOGO_POSITION = True
+
+# accep specify position from user
+# position_name must be 'x' or 'y'
+# user can choose center also
+def ask_position(position_name, image_distance = 0, logo_distance = 0):
+	print('Specify ' + position_name + ' positon of logo.')
+	print('if you want center type "center"')
+	position_input = input()
+
+	if position_input == 'center':
+		return int((image_distance / 2) + (logo_distance / 2))
+	else:
+		try:
+			return int(position_input)
+		except Exception as e:
+			print('Error! You should inter a number.')
+			return ask_position(position_name)
+
 # Open Logo image
 logoIm = Image.open(os.path.join(LOGO_DIRECTORY, LOGO_FILENAME))
 logoWith, logoHeight = logoIm.size
@@ -82,13 +109,19 @@ for filename in os.listdir(INPUT_DIRECTORY):
 	logoIm = logoIm.resize((logoWith, logoHeight), Image.ANTIALIAS)
 
 	# Add background
+
+	print('Adding logo to %s...' % (filename))
+
+	if SPECIFY_LOGO_POSITION:
+		width = ask_position('x', width, logoWith)
+		height = ask_position('y', height, logoHeight)
+
 	if WANT_BACKGROUND:
 		backgroundIm = Image.new('RGBA', (logoWith, logoHeight), (0, 0, 0, 64))
 		im.paste(backgroundIm, (width - logoWith, height - logoHeight), backgroundIm)
 
 	# Add the logo.
 
-	print('Adding logo to %s...' % (filename))
 	im.paste(logoIm, (width - logoWith, height - logoHeight), logoIm)
 
 	# Save changes.
