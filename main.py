@@ -14,6 +14,7 @@ OUTPUT_DIRECTORY = 'output'
 LOGO_STYLE_1 = 'logo_style_1.png'
 LOGO_STYLE_2 = 'logo_style_2.png'
 LOGO_STYLE_3 = 'logo_style_3.png'
+LINE_LOGO_STYLE_1 = 'line_logo_style_1.png'
 
 LOGO_FILENAME = LOGO_STYLE_1
 
@@ -38,6 +39,10 @@ def ask_is_auto():
 
 def ask_type_of_logo():
 	print('1. Choose logo style (1, 2 or 3)')
+	print('1) Logo Style 1')
+	print('2) Logo Style 2')
+	print('3) Logo Style 3')
+	print('4) Line Logo Style 1')
 	print('(enter nothing for choose style 1)')
 	logoStyleInput = input()
 
@@ -48,6 +53,8 @@ def ask_type_of_logo():
 			return LOGO_STYLE_2
 		elif logoStyleInput == '3':
 			return LOGO_STYLE_3
+		elif logoStyleInput == '4':
+			return LINE_LOGO_STYLE_1
 	
 	return LOGO_STYLE_1
 
@@ -66,18 +73,18 @@ def ask_size_of_logo():
 
 def ask_has_background():
 	print('3. Do you want any background: Y or N')
-	print('(enter nothing for choose N (No))')
+	print('(enter nothing for choose Y (Yes))')
 	wantBackground = input()
 
 	if len(wantBackground) > 0:
-		if wantBackground == 'Y' or wantBackground == 'y':
-			return True
+		if wantBackground == 'N' or wantBackground == 'n':
+			return False
 
-	return False
+	return True
 
 def ask_specify_logo_position():
 	print('4. Do you want to specify logo position: Y or N')
-	print('(enter nothing for choose N (No))')
+	print('(enter nothing for choose N (No) [default is Right Bottom])')
 	specifyLogoPosition = input()
 
 	if len(specifyLogoPosition) > 0:
@@ -131,7 +138,7 @@ if isAuto:
 	# question 4 ask specify logo position
 	SPECIFY_LOGO_POSITION = ask_specify_logo_position()
 
-# Create output derectory
+# Create output directory
 os.makedirs(OUTPUT_DIRECTORY, exist_ok=True)
 
 # Loop over all files in the working directory.
@@ -177,7 +184,9 @@ for filename in os.listdir(INPUT_DIRECTORY):
 
 	# Add background
 
+	filename = '_' + filename
 	print('Adding logo to %s...' % (filename))
+	print('--------')
 
 	if SPECIFY_LOGO_POSITION:
 		width = ask_position('x', width, logoWith)
